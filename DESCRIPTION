@@ -16,3 +16,5 @@ LazyData: true
 RoxygenNote: 7.1.1
 Imports: 
     stats
+URL: https://github.com/Medicine1/corrarray
+BugReports: https://github.com/Medicine1/corrarray/issues
