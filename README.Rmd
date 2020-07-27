@@ -1,0 +1,44 @@
+---
+output: github_document
+---
+
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# corrarray
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of `corrarray` is to create a correlation array by combining correlation matrices of a data set stratified by a grouping variable. For two specified levels of the variable, `corrarray` displays one level's correlation matrix in the lower triangular matrix and the other level's in the upper triangular matrix. Such an output can enable visualization of correlations from two samples in a single correlation matrix or corrgram.
+
+## Installation
+
+You can install the released version of `corrarray` from [CRAN](https://CRAN.R-project.org) with:
+
+``` r
+install.packages("corrarray")
+```
+
+## Example
+
+The following illustrates how `corrarray` can be used to generate a 1- or 2-sample correlation matrix or a k-sample correlation array:
+
+```{r example}
+library(corrarray)
+# All observations: 1-sample correlation matrix.
+corrarray(iris)
+# Stratify by the four species: 4-sample correlation array.
+corrarray(iris, "Species", output = "array")
+# Specify lower and upper samples: 2-sample correlation matrix.
+corrarray(iris, "Species", lower = "setosa", upper = "virginica")
+```
+
