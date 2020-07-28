@@ -61,8 +61,10 @@ If multiple values are provided for \code{group},
 \examples{
 # All observations: 1-sample correlation matrix.
 corrarray(iris)
-# Stratify by the four species: 4-sample correlation array.
+
+# Stratify by the three species: 3-sample correlation array.
 corrarray(iris, "Species", output = "array")
+
 # Specify lower and upper samples: 2-sample correlation matrix.
 corrarray(iris, "Species", lower = "setosa", upper = "virginica")
 
