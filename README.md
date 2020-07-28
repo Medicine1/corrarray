@@ -9,10 +9,10 @@ status](https://travis-ci.com/Medicine1/corrarray.svg?branch=master)](https://tr
 status](https://ci.appveyor.com/api/projects/status/github/Medicine1/corrarray?branch=master&svg=true)](https://ci.appveyor.com/project/Medicine1/corrarray)
 <!-- badges: end -->
 
-The goal of `corrarray` is to create a correlation array by combining
-correlation matrices of a data set stratified by a grouping variable.
-For two specified levels of the variable, `corrarray` displays one
-level’s correlation matrix in the lower triangular matrix and the
+The goal of `corrarray` is to create a multi-sample correlation array by
+combining correlation matrices of a data set stratified by a grouping
+variable. For two specified levels of the variable, `corrarray` displays
+one level’s correlation matrix in the lower triangular matrix and the
 other level’s in the upper triangular matrix. Such an output can enable
 visualization of correlations from two samples in a single correlation
 matrix or corrgram.
@@ -33,14 +33,15 @@ or 2-sample correlation matrix or a k-sample correlation array:
 
 ``` r
 library(corrarray)
-# All observations: 1-sample correlation matrix.
+## All observations: 1-sample correlation matrix.
 corrarray(iris)
 #>              Sepal.Length Sepal.Width Petal.Length Petal.Width
 #> Sepal.Length    1.0000000  -0.1175698    0.8717538   0.8179411
 #> Sepal.Width    -0.1175698   1.0000000   -0.4284401  -0.3661259
 #> Petal.Length    0.8717538  -0.4284401    1.0000000   0.9628654
 #> Petal.Width     0.8179411  -0.3661259    0.9628654   1.0000000
-# Stratify by the four species: 4-sample correlation array.
+
+## Stratify by the three species: 3-sample correlation array.
 corrarray(iris, "Species", output = "array")
 #> , , Sample = setosa
 #> 
@@ -68,7 +69,8 @@ corrarray(iris, "Species", output = "array")
 #>   Sepal.Width     0.4572278   1.0000000    0.4010446   0.5377280
 #>   Petal.Length    0.8642247   0.4010446    1.0000000   0.3221082
 #>   Petal.Width     0.2811077   0.5377280    0.3221082   1.0000000
-# Specify lower and upper samples: 2-sample correlation matrix.
+
+## Specify lower and upper samples: 2-sample correlation matrix.
 corrarray(iris, "Species", lower = "setosa", upper = "virginica")
 #> [1] "Sample1 (lower triangular matrix) is 'setosa' (n=50)."   
 #> [2] "Sample2 (upper triangular matrix) is 'virginica' (n=50)."

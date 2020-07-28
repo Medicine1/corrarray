@@ -44,8 +44,9 @@ An array or matrix with numeric values from \code{-1} to
   \code{1} (inclusive) and with row and column names as the variable names.
 }
 \description{
-This function creates a correlation array combining
-  matrices for each level of a specified grouping variable.
+This function creates a multi-sample correlation array
+  combining the correlation matrices for each level of the specified
+  grouping variable.
   Given two levels of the grouping variable, this function creates a single
   correlation matrix displaying the individual triangular matrices on
   opposite sides of the principal diagonal.
@@ -59,11 +60,13 @@ If multiple values are provided for \code{group},
   different levels.
 }
 \examples{
-# All observations: 1-sample correlation matrix.
+## All observations: 1-sample correlation matrix.
 corrarray(iris)
-# Stratify by the four species: 4-sample correlation array.
+
+## Stratify by the three species: 3-sample correlation array.
 corrarray(iris, "Species", output = "array")
-# Specify lower and upper samples: 2-sample correlation matrix.
+
+## Specify lower and upper samples: 2-sample correlation matrix.
 corrarray(iris, "Species", lower = "setosa", upper = "virginica")
 
 }

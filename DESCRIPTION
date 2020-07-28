@@ -4,10 +4,12 @@ Title: Correlation Arrays and 2-Sample Correlation Matrices
 Version: 0.1.0
 Author: Rohan Reddy Tummala
 Maintainer: Rohan Reddy Tummala <rohantummala@gmail.com>
-Description: Create a correlation array by combining correlation matrices
-  of a data set stratified by a grouping variable. For two specified levels
-  of the variable, display one level's correlation matrix in the lower 
-  triangular matrix and the other level's in the upper triangular matrix.
+Description: The goal of `corarray` is to create a multi-sample
+  correlation array by combining correlation matrices of a data set
+  stratified by a grouping variable. 
+  For two specified levels of the variable, `corarray` displays one level's 
+  correlation matrix in the lower triangular matrix and the other level's
+  correlation matrix in the upper triangular matrix.
   Such an output can enable visualization of correlations from two samples
   in a single correlation matrix or corrgram.
 License: GPL-3
