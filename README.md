@@ -3,6 +3,8 @@
 
 <!-- badges: start -->
 
+[![Travis build
+status](https://travis-ci.com/Medicine1/corrarray.svg?branch=master)](https://travis-ci.com/Medicine1/corrarray)
 <!-- badges: end -->
 
 The goal of `corrarray` is to create a correlation array by combining
