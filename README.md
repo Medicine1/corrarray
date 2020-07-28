@@ -5,6 +5,8 @@
 
 [![Travis build
 status](https://travis-ci.com/Medicine1/corrarray.svg?branch=master)](https://travis-ci.com/Medicine1/corrarray)
+[![AppVeyor build
+status](https://ci.appveyor.com/api/projects/status/github/Medicine1/corrarray?branch=master&svg=true)](https://ci.appveyor.com/project/Medicine1/corrarray)
 <!-- badges: end -->
 
 The goal of `corrarray` is to create a correlation array by combining
