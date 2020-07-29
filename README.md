@@ -10,12 +10,12 @@ status](https://ci.appveyor.com/api/projects/status/github/Medicine1/corrarray?b
 <!-- badges: end -->
 
 The goal of `corrarray` is to create a multi-sample correlation array by
-combining correlation matrices of a data set stratified by a grouping
-variable. For two specified levels of the variable, `corrarray` displays
-one level’s correlation matrix in the lower triangular matrix and the
-other level’s in the upper triangular matrix. Such an output can enable
-visualization of correlations from two samples in a single correlation
-matrix or corrgram.
+combining the correlation matrices of a data set stratified by a
+grouping variable. For two specified levels of the variable, `corrarray`
+displays one level’s correlation matrix in the lower triangular matrix
+and the other level’s in the upper triangular matrix. Such an output can
+enable visualization of correlations from two samples in a single
+correlation matrix or corrgram.
 
 ## Installation
 
