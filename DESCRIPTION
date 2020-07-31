@@ -4,7 +4,7 @@ Title: Correlation Arrays and 2-Sample Correlation Matrices
 Version: 0.1.0
 Author: Rohan Reddy Tummala
 Maintainer: Rohan Reddy Tummala <rohantummala@gmail.com>
-Description: The goal of `corarray` is to create a multi-sample
+Description: The goal of `corrarray` is to create a multi-sample
   correlation array by combining the correlation matrices of a data set
   stratified by a grouping variable. 
   For two specified levels of the variable, `corarray` displays one level's 
