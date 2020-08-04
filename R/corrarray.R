@@ -121,7 +121,7 @@ corrarray <- function(x, group = NULL, lower = NULL, upper = NULL,
   new.x <- x[, (unlist(lapply(x, FUN = is.numeric)) | names(x) == group)]
 
   # Determine the number of groups and variables.
-  grplevels <- levels(new.x[, group])
+  grplevels <- unique(new.x[, group])
   ngroups <- length(grplevels)
   nvar <- ncol(new.x) - 1
 
@@ -139,17 +139,21 @@ corrarray <- function(x, group = NULL, lower = NULL, upper = NULL,
                       dimnames = list(names(new.x), names(new.x),
                                       Sample = grplevels))
 
-  sig.array <- array(dim = c(nvar, nvar, ngroups),
-                     dimnames = list(names(new.x), names(new.x),
-                                     Sample = grplevels))
+  if (any(output == c("sig.matrix", "sig.array"))) {
+    sig.array <- array(dim = c(nvar, nvar, ngroups),
+                       dimnames = list(names(new.x), names(new.x),
+                                       Sample = grplevels))
+  }
 
   # Assign correlations and significance values to array for each group.
   for (i in 1:ngroups) {
     corr.array[,,i] <- cor(new.x[obs_groups[[i]],], use = use,
                            method = method)
+    if (any(output == c("sig.matrix", "sig.array"))) {
+      sig.array[,,i] <- rcorr(as.matrix(new.x[obs_groups[[i]],]),
+                              type = method)$P
+    }
 
-    sig.array[,,i] <- rcorr(as.matrix(new.x[obs_groups[[i]],]),
-                            type = method)$P
   }
 
   # Output array if output = "array".
@@ -224,11 +228,15 @@ corrarray <- function(x, group = NULL, lower = NULL, upper = NULL,
     for (j in 1:nvar) {
       if (j <= i) {
         M[i,j] <- corr.array[i,j,lower]
-        sig.M[i,j] <- sig.array[i,j,lower]
+        if (any(output == c("sig.matrix", "sig.array"))) {
+          sig.M[i,j] <- sig.array[i,j,lower]
+        }
       }
       else if (j > i) {
         M[i,j] <- corr.array[i,j,upper]
-        sig.M[i,j] <- sig.array[i,j,upper]
+        if (any(output == c("sig.matrix", "sig.array"))) {
+          sig.M[i,j] <- sig.array[i,j,upper]
+        }
       }
     }
   }
