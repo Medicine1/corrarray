@@ -8,7 +8,7 @@
 #'   opposite sides of the principal diagonal.
 #'
 #' @usage corrarray(x, group = NULL, lower = NULL, upper = NULL,
-#'   output = c("matrix", "array"),
+#'   output = c("matrix", "array", "sig.matrix", "sig.array"),
 #'   use = c("complete.obs", "everything", "all.obs",
 #'   "na.or.complete", "pairwise.complete.obs"),
 #'   method = c("pearson", "kendall", "spearman"))
@@ -27,8 +27,10 @@
 #'   the second level in the data set is treated as the lower level.
 #'
 #' @param output If a group that has 2 or more levels is specified,
-#'   then "\code{matrix}" returns the corresponding 2-sample correlation
-#'   matrix (default), and "\code{array}" returns the correlation array.
+#'   then "\code{matrix}" (default) returns the corresponding 2-sample
+#'   correlation matrix, and "\code{array}" returns the
+#'   correlation array. "\code{sig.matrix}" and "\code{sig.array}" return
+#'   the significance values of the corresponding correlations.
 #'
 #' @param use an optional character string giving a method for
 #'   computing correlations in the presence of missing values.
@@ -48,15 +50,20 @@
 #'   variable's values, even if numeric, are automatically treated as
 #'   different levels.
 #'
-#' @return An array or matrix with numeric values from \code{-1} to
-#'   \code{1} (inclusive) and with row and column names as the variable names.
+#' @return \code{corrarray} returns an array or matrix of correlations
+#'   as numeric values from \code{-1} to \code{1} (inclusive),
+#'   or of significance values of the corresponding correlations,
+#'   and with row and column names as the variable names.
 #'
 #' @export
 #'
 #' @seealso \code{\link{cor}} for further descriptions of the \code{use}
-#'   and \code{method} parameters.
+#'   and \code{method} parameters, and \code{\link{rcorr}} for significance
+#'   tests of correlations.
 #'
 #' @importFrom stats cor
+#'
+#' @importFrom Hmisc rcorr
 #'
 #' @examples
 #' ## All observations: 1-sample correlation matrix.
@@ -69,16 +76,28 @@
 #' corrarray(iris, "Species", lower = "setosa", upper = "virginica")
 #'
 corrarray <- function(x, group = NULL, lower = NULL, upper = NULL,
-                      output = c("matrix", "array"),
+                      output = c("matrix", "array", "sig.matrix", "sig.array"),
                       use = c("complete.obs", "everything", "all.obs",
                               "na.or.complete", "pairwise.complete.obs"),
                       method = c("pearson", "kendall", "spearman")){
 
-  # If group = NULL, return 1-sample correlation matrix.
-  if (is.null(group)) {
+  # Check multi-option input parameters.
+  output <- match.arg(output)
+  use <- match.arg(use)
+  method <- match.arg(method)
+
+  # If group = NULL and output = "matrix", return 1-sample correlation matrix.
+  if (is.null(group) && output == "matrix") {
     # Remove columns that are not numeric.
     new.x <- x[,unlist(lapply(x, FUN = is.numeric))]
-    return(cor(new.x, use = "complete.obs", method = method))
+    return(cor(new.x, use = use, method = method))
+  }
+
+  # If group = NULL and output = "sig.matrix", return 1-sample sig.matrix.
+  if (is.null(group) && output == "sig.matrix") {
+    # Remove columns that are not numeric.
+    new.x <- x[,unlist(lapply(x, FUN = is.numeric))]
+    return(rcorr(as.matrix(new.x), type = method)$P)
   }
 
   # If multiple elements are specified, choose only first element.
@@ -115,21 +134,32 @@ corrarray <- function(x, group = NULL, lower = NULL, upper = NULL,
   # Create a modified data frame with grouping variable column removed.
   new.x <- new.x[, names(new.x) != group]
 
-  # Create a correlation array based on number of groups.
+  # Create a correlation and significance array based on number of groups.
   corr.array <- array(dim = c(nvar, nvar, ngroups),
                       dimnames = list(names(new.x), names(new.x),
                                       Sample = grplevels))
 
-  # Assign correlations to array for each group.
+  sig.array <- array(dim = c(nvar, nvar, ngroups),
+                     dimnames = list(names(new.x), names(new.x),
+                                     Sample = grplevels))
+
+  # Assign correlations and significance values to array for each group.
   for (i in 1:ngroups) {
-    corr.array[,,i] <- cor(new.x[obs_groups[[i]],], use = "complete.obs",
+    corr.array[,,i] <- cor(new.x[obs_groups[[i]],], use = use,
                            method = method)
+
+    sig.array[,,i] <- rcorr(as.matrix(new.x[obs_groups[[i]],]),
+                            type = method)$P
   }
 
   # Output array if output = "array".
-  output <- match.arg(output)
   if (output == "array") {
     return(corr.array)
+  }
+
+  # Output significance array if output = "sig.array".
+  if (output == "sig.array") {
+    return(sig.array)
   }
 
   # Compute number of correlation combinations using formula 'ncor'='nvar'C2.
@@ -160,13 +190,27 @@ corrarray <- function(x, group = NULL, lower = NULL, upper = NULL,
     upper <- 2
   }
 
-  # Create matrix of proper dimensions. ####
+  # Create matrices of proper dimensions. ####
   M <- matrix(data = NA, nrow = nvar, ncol = nvar,
               dimnames = list(Sample1=names(new.x),
                               Sample2=names(new.x)))
 
+  sig.M <- matrix(data = NA, nrow = nvar, ncol = nvar,
+              dimnames = list(Sample1=names(new.x),
+                              Sample2=names(new.x)))
+
+
   # Comment with the factor level referred to by the sample numbers.
   comment(M) <- c(paste("Sample1 (lower triangular matrix) is '",
+                        grplevels[lower], "' (n=",
+                        sum(x[, group] == grplevels[lower]), ").",
+                        sep = ""),
+                  paste("Sample2 (upper triangular matrix) is '",
+                        grplevels[upper], "' (n=",
+                        sum(x[, group] == grplevels[upper]), ").",
+                        sep = ""))
+
+  comment(sig.M) <- c(paste("Sample1 (lower triangular matrix) is '",
                         grplevels[lower], "' (n=",
                         sum(x[, group] == grplevels[lower]), ").",
                         sep = ""),
@@ -180,15 +224,25 @@ corrarray <- function(x, group = NULL, lower = NULL, upper = NULL,
     for (j in 1:nvar) {
       if (j <= i) {
         M[i,j] <- corr.array[i,j,lower]
+        sig.M[i,j] <- sig.array[i,j,lower]
       }
       else if (j > i) {
         M[i,j] <- corr.array[i,j,upper]
+        sig.M[i,j] <- sig.array[i,j,upper]
       }
     }
   }
 
-  # Output matrix and show the name of each sample.
-  print(attr(x = M, which = "comment"))
-  return(M)
+  # Output matrix and show the name of each sample if output is "matrix".
+  if(output == "matrix") {
+    print(attr(x = M, which = "comment"))
+    return(M)
+  }
+
+  # Output significance matrix if output is "sig.matrix".
+  if(output == "sig.matrix") {
+    print(attr(x = sig.M, which = "comment"))
+    return(sig.M)
+  }
 
 }

@@ -5,7 +5,7 @@
 \title{Correlation Arrays and 2-Sample Correlation Matrices}
 \usage{
 corrarray(x, group = NULL, lower = NULL, upper = NULL,
-  output = c("matrix", "array"),
+  output = c("matrix", "array", "sig.matrix", "sig.array"),
   use = c("complete.obs", "everything", "all.obs",
   "na.or.complete", "pairwise.complete.obs"),
   method = c("pearson", "kendall", "spearman"))
@@ -25,8 +25,10 @@ upper triangular matrix. If no level is specified (default), then
 the second level in the data set is treated as the lower level.}
 
 \item{output}{If a group that has 2 or more levels is specified,
-then "\code{matrix}" returns the corresponding 2-sample correlation
-matrix (default), and "\code{array}" returns the correlation array.}
+then "\code{matrix}" (default) returns the corresponding 2-sample
+correlation matrix, and "\code{array}" returns the
+correlation array. "\code{sig.matrix}" and "\code{sig.array}" return
+the significance values of the corresponding correlations.}
 
 \item{use}{an optional character string giving a method for
 computing correlations in the presence of missing values.
@@ -40,8 +42,10 @@ is to be computed: "\code{pearson}" (default), "\code{kendall}",
 or "\code{spearman}".}
 }
 \value{
-An array or matrix with numeric values from \code{-1} to
-  \code{1} (inclusive) and with row and column names as the variable names.
+\code{corrarray} returns an array or matrix of correlations
+  as numeric values from \code{-1} to \code{1} (inclusive),
+  or of significance values of the corresponding correlations,
+  and with row and column names as the variable names.
 }
 \description{
 This function creates a multi-sample correlation array
@@ -72,5 +76,6 @@ corrarray(iris, "Species", lower = "setosa", upper = "virginica")
 }
 \seealso{
 \code{\link{cor}} for further descriptions of the \code{use}
-  and \code{method} parameters.
+  and \code{method} parameters, and \code{\link{rcorr}} for significance
+  tests of correlations.
 }
